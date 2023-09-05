@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import baseFooter from './components/base-footer/base-footer.vue'
+
 </script>
 
 <template>
   <div class="app">
-    <baseFooter class="footer" />
+    <routerView />
   </div>
 </template>
 
@@ -14,10 +14,5 @@ import baseFooter from './components/base-footer/base-footer.vue'
   height: 100%;
   background-color: #0e0e0e;
   position: relative;
-
-  .footer {
-    position: absolute;
-    bottom: 0;
-  }
 }
 </style>

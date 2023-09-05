@@ -3,11 +3,34 @@ import { createRouter, createWebHistory } from 'vue-router'
 const route = [
   {
     path: '/',
-    redirect: '/home',
+    redirect: '/main',
   },
   {
-    path: '/home',
-    component: () => import('@/views/home/home.vue'),
+    path: '/main',
+    redirect: '/main/home',
+    component: () => import('@/views/main/main.vue'),
+    children: [
+      {
+        path: 'home',
+        component: () => import('@/views/home/home.vue'),
+      },
+      {
+        path: 'user',
+        component: () => import('@/views/user/user.vue'),
+      },
+      {
+        path: 'media',
+        component: () => import('@/views/media/media.vue'),
+      },
+    ],
+  },
+  {
+    path: '/detail-song',
+    component: () => import('@/views/detail/detail-song.vue'),
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    component: () => import('@/views/NotFound/NotFound.vue'),
   },
 ]
 
