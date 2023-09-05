@@ -4,6 +4,7 @@ import { fetchPpersonalizeder, fetchNewSong } from '@/server/modules/home'
 export const useHomeStore = defineStore('homeStore', {
   state: () => ({
     personalized: '',
+    newSongList: '',
   }),
   actions: {
     async getPpersonalizeder() {
@@ -12,7 +13,7 @@ export const useHomeStore = defineStore('homeStore', {
     },
     async getNewSong() {
       const res = await fetchNewSong<any>()
-      console.log(res)
+      this.newSongList = res.result
     },
   },
 })

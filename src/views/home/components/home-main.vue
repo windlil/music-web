@@ -12,7 +12,7 @@ function getHomeData() {
   homeStore.getNewSong()
 }
 getHomeData()
-const { personalized } = storeToRefs(homeStore)
+const { personalized, newSongList } = storeToRefs(homeStore)
 </script>
 
 <template>
@@ -22,8 +22,8 @@ const { personalized } = storeToRefs(homeStore)
         <MusicBox :music-data="item" />
       </template>
     </Container>
-    <Container class="container" title="最新歌曲">
-      <MusicList />
+    <Container v-if="newSongList" class="container" title="最新歌曲">
+      <MusicList :music-list="newSongList" />
     </Container>
   </div>
 </template>
