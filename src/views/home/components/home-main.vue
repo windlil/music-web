@@ -11,6 +11,7 @@ function getHomeData() {
   homeStore.getPpersonalizeder()
   homeStore.getNewSong()
 }
+
 getHomeData()
 const { personalized, newSongList } = storeToRefs(homeStore)
 </script>

@@ -17,3 +17,12 @@ export function fetchMusicDetail<T = any>(ids: number) {
     },
   })
 }
+
+export function fetchPlayList<T = any>(id: number) {
+  return useRequest.get<T>({
+    url: '/playlist/detail',
+    params: {
+      id,
+    },
+  })
+}

@@ -5,7 +5,11 @@ import BaseFooter from '@/components/base-footer/base-footer.vue'
 <template>
   <div class="main">
     <div class="content">
-      <routerView />
+      <router-view v-slot="{ Component }">
+        <keep-alive>
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
     </div>
     <BaseFooter class="footer" />
   </div>

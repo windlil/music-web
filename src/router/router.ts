@@ -29,6 +29,10 @@ const route = [
     component: () => import('@/views/detail/detail-song.vue'),
   },
   {
+    path: '/detail-list',
+    component: () => import('@/views/detail/detail-list.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     component: () => import('@/views/NotFound/NotFound.vue'),
   },

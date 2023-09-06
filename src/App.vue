@@ -1,10 +1,31 @@
 <script setup lang="ts">
+import { ref, nextTick } from 'vue'
 
+const audioRef = ref<HTMLAudioElement>()
+
+interface Music {
+  url: string
+  status: boolean
+}
+
+const url = ref<string>()
+
+function playMusic(musicData: Music) {
+  url.value = musicData.url
+  if (musicData.status) {
+    nextTick(() => {
+      audioRef.value?.play()
+    })
+  } else {
+    audioRef.value?.pause()
+  }
+}
 </script>
 
 <template>
   <div class="app">
-    <routerView />
+    <RouterView @play-music="playMusic" />
+    <audio ref="audioRef" :src="url" />
   </div>
 </template>
 

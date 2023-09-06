@@ -23,15 +23,12 @@ function toDetail(id: number) {
   <div v-if="musicList" class="music-list">
     <ul>
       <li v-for="item in musicList" :key="item.id" class="list-item" @click="toDetail(item.id)">
-        <span class="music-img">
-          <img :src="item.picUrl" alt="">
-        </span>
         <span class="info">
           <p class="name">
             {{ item.name }}
           </p>
           <p class="artist">
-            {{ getCompleteName(item.song.artists) }}
+            {{ getCompleteName(item.ar) }}
           </p>
         </span>
         <div class="icon">

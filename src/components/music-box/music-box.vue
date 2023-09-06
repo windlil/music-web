@@ -10,7 +10,7 @@ const router = useRouter()
 
 function toDetail(musicData: any) {
   router.push({
-    path: '/detail-song',
+    path: '/detail-list',
     query: {
       id: musicData.id,
     },

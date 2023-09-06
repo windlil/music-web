@@ -1,25 +1,30 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import { Icon } from '@iconify/vue'
+import useMusicStore from '@/store/modules/music'
 import { fetchMusicUrl, fetchMusicDetail } from '@/server/modules/detail'
 import { getCompleteName } from '@/utils'
 
+const emits = defineEmits(['playMusic'])
+
+const musicStore = useMusicStore()
+const { currentPlayMusic } = storeToRefs(musicStore)
 const route = useRoute()
 const router = useRouter()
 const musicData = ref()
 const musicDetail = ref()
 const songs = ref()
 const url = ref()
-const audioRef = ref<HTMLAudioElement>()
-const audioPlayStatus = ref(false)
+
+const audioPlayStatus = ref((currentPlayMusic.value as any) === route.query.id)
 
 async function getMusicUrlAndDetail(id: any) {
   musicData.value = await fetchMusicUrl<any>(id)
   musicDetail.value = await fetchMusicDetail(id)
   songs.value = musicDetail.value.songs[0]
   url.value = musicData.value.data[0].url
-  console.log(songs.value)
 }
 
 function back() {
@@ -27,12 +32,12 @@ function back() {
 }
 
 function play() {
-  if (audioPlayStatus.value) {
-    audioRef.value?.pause()
-  } else {
-    audioRef.value?.play()
-  }
+  musicStore.setCurrentPlayMusic(route.query.id as any)
   audioPlayStatus.value = !audioPlayStatus.value
+  emits('playMusic', {
+    url: url.value,
+    status: audioPlayStatus.value,
+  })
 }
 
 const playIcon = computed(() => {
@@ -65,7 +70,6 @@ onMounted(() => {
       <Icon class="icon" :icon="playIcon" @click="play" />
       <Icon class="icon" icon="ic:baseline-skip-next" />
     </div>
-    <audio ref="audioRef" controls :src="url" />
   </div>
 </template>
 
