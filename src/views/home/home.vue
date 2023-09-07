@@ -34,9 +34,6 @@ function toDetail() {
           正在播放：
           {{ currentPlayMusicData.name }}
         </div>
-        <div class="progress">
-          00:48/04:11
-        </div>
       </div>
     </div>
     <HomeHeader />

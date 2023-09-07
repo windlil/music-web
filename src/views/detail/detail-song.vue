@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { Icon } from '@iconify/vue'
@@ -31,13 +31,20 @@ watch(() => route.query, async () => {
   play(true)
 })
 
-const sliderValue = computed(() => {
+const sliderValue = ref(0)
+
+function setSliderValue() {
   if (enterMusicId.value === currentPlayMusicId.value) {
-    return (currentPlayMusicData.value.currentTime * 1000 / musicPlayAllTime.value) * 100
+    sliderValue.value = (currentPlayMusicData.value.currentTime * 1000 / musicPlayAllTime.value) * 100
   } else {
-    return 0
+    sliderValue.value = 0
   }
-})
+  return sliderValue.value
+}
+
+const inerval = setInterval(() => {
+  setSliderValue()
+}, 500)
 
 const onChange = (value: any) => console.log(value)
 
@@ -131,9 +138,17 @@ function toNext() {
   })
 }
 
+function drag() {
+  console.log('drap')
+}
+
 onMounted(() => {
   getMusicUrlAndDetail(route.query.id)
   getPreAndNextSong()
+})
+
+onBeforeUnmount(() => {
+  clearInterval(inerval)
 })
 </script>
 
@@ -157,7 +172,7 @@ onMounted(() => {
       <div class="time">
         {{ formatTime(currentPlayMusicData.currentTime * 1000) }}
       </div>
-      <van-slider v-model="sliderValue" active-color="pink" @change="onChange" />
+      <van-slider v-model="sliderValue" active-color="pink" @drag-star="drag" @change="onChange" />
       <div class="time">
         {{ formatTime(musicPlayAllTime) }}
       </div>

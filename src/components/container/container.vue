@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineProps<{
   title: string
+  pB?: string
 }>()
 </script>
 
@@ -9,7 +10,7 @@ defineProps<{
     <p class="title">
       {{ title }}
     </p>
-    <div class="content">
+    <div class="content" :style="{ paddingBottom: pB }">
       <slot />
     </div>
   </div>
@@ -31,6 +32,7 @@ defineProps<{
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    overflow: auto;
   }
 }
 </style>

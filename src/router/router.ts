@@ -22,6 +22,10 @@ const route = [
         path: 'media',
         component: () => import('@/views/media/media.vue'),
       },
+      {
+        path: 'top',
+        component: () => import('@/views/top/top.vue'),
+      },
     ],
   },
   {

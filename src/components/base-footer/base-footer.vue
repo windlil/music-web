@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import { Icon } from '@iconify/vue'
+import { useMainStore } from '@/store/modules/mian'
 
 interface Item {
   iconName: string
@@ -9,12 +11,18 @@ interface Item {
 }
 
 const router = useRouter()
-const currentIndex = ref(0)
+const mainStore = useMainStore()
+const { useCurrentIndex } = storeToRefs(mainStore)
+const currentIndex = ref(useCurrentIndex.value)
 
 const itemList = reactive<Item[]>([
   {
     iconName: 'solar:home-angle-outline',
     url: '/main/home',
+  },
+  {
+    iconName: 'icon-park-outline:ranking',
+    url: '/main/top',
   },
   {
     iconName: 'la:user',
@@ -28,6 +36,7 @@ const itemList = reactive<Item[]>([
 
 function clickItem(item: Item, index: number) {
   router.push(item.url)
+  mainStore.setCurrentIndex(index)
   currentIndex.value = index
 }
 </script>
@@ -40,7 +49,7 @@ function clickItem(item: Item, index: number) {
       @click="clickItem(item, index)"
     >
       <Icon
-        style="font-size: 28px; color: #6d6d6d;"
+        style="font-size: 28px; color: #616161;"
         :class="{ actived: currentIndex === index }"
         :icon="item.iconName"
       />
