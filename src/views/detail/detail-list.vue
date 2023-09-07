@@ -4,12 +4,14 @@ import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import { fetchPlayList } from '@/server/modules/detail'
 import PlayList from '@/components/music-list/play-list.vue'
+import useMusicStore from '@/store/modules/music'
 
 const route = useRoute()
 const router = useRouter()
 const id = ref(route.query.id) as any
 const playList = ref()
 const tracks = ref()
+const musicStore = useMusicStore()
 
 function back() {
   router.back()
@@ -17,12 +19,12 @@ function back() {
 
 async function getPlayList() {
   const data = await fetchPlayList(id.value)
-  console.log(data)
   playList.value = data.playlist
   tracks.value = playList.value.tracks
   for (let i = 0; i < tracks.value.length; i++) {
     tracks.value[i].id = playList.value.trackIds[i].id
   }
+  musicStore.setEnterPlayList(tracks.value as any)
 }
 getPlayList()
 </script>

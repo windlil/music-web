@@ -28,6 +28,5 @@ import BaseFooter from '@/components/base-footer/base-footer.vue'
     position: absolute;
     bottom: 0;
   }
-
 }
 </style>

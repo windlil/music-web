@@ -2,14 +2,18 @@
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { getCompleteName } from '@/utils/index'
+import useMusicStore from '@/store/modules/music'
 
-defineProps<{
+const props = defineProps<{
   musicList: any
 }>()
 
+const musicStore = useMusicStore()
 const router = useRouter()
 
 function toDetail(id: number) {
+  musicStore.setEnterPlayList(props.musicList)
+
   router.push({
     path: '/detail-song',
     query: {
