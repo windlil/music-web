@@ -9,8 +9,11 @@ const musicStore = defineStore('musicStore', {
       currentTime: 0,
     },
     enterMusicId: 0,
-    enterplayList: [''],
     currentPlayList: [''],
+    preAndNext: {
+      pre: '',
+      next: '',
+    },
   }),
   actions: {
     setCurrentPlayMusic(id: number) {
@@ -29,11 +32,11 @@ const musicStore = defineStore('musicStore', {
     setEnterMusicId(id: number) {
       this.enterMusicId = id
     },
-    setEnterPlayList(arr: any[]) {
-      this.enterplayList = arr
-    },
     setPlayList(arr: any[]) {
       this.currentPlayList = arr
+    },
+    setPreAndNextMusic(data: any) {
+      this.preAndNext = data
     },
   },
 })

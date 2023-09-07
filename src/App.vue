@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
-import { storeToRefs } from 'pinia'
 import useMusicStore from '@/store/modules/music'
 
 const audioRef = ref<HTMLAudioElement>()
 const musicStore = useMusicStore()
-const { enterplayList } = storeToRefs(musicStore)
 
 interface Music {
   url: string
@@ -18,7 +16,6 @@ function playMusic(musicData: Music) {
   url.value = musicData.url
   if (musicData.status) {
     nextTick(() => {
-      musicStore.setPlayList(enterplayList.value)
       musicStore.setPlayStatus(true)
       audioRef.value?.play()
     })

@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { Icon } from '@iconify/vue'
 import useMusicStore from '@/store/modules/music'
 import { fetchMusicUrl, fetchMusicDetail } from '@/server/modules/detail'
 import { getCompleteName } from '@/utils'
+import { getPlayListPreAndNext } from '@/utils/getPlayListSort'
 
 const emits = defineEmits(['playMusic'])
 
 const musicStore = useMusicStore()
-const { currentPlayMusicId, currentPlayMusicData, enterMusicId } = storeToRefs(musicStore)
+const { currentPlayMusicId, currentPlayMusicData, enterMusicId, currentPlayList } = storeToRefs(musicStore)
 const route = useRoute()
 const router = useRouter()
 const musicData = ref()
@@ -22,6 +23,13 @@ const isCurrentMusicPlay = ref(((currentPlayMusicId.value as any) === route.quer
 const audioPlayStatus = ref(isCurrentMusicPlay.value && currentPlayMusicData.value.status)
 
 musicStore.setEnterMusicId(route.query.id as any)
+
+watch(() => route.query, async () => {
+  musicStore.setEnterMusicId(route.query.id as any)
+  await getMusicUrlAndDetail(route.query.id)
+  getPreAndNextSong()
+  play(true)
+})
 
 const sliderValue = computed(() => {
   if (enterMusicId.value === currentPlayMusicId.value) {
@@ -43,22 +51,35 @@ async function getMusicUrlAndDetail(id: any) {
   songs.value = musicDetail.value.songs[0]
   url.value = musicData.value.data[0].url
   musicPlayAllTime.value = songs.value.dt
+  console.log('getMusicUrlAndDetail', url.value)
 }
 
 function back() {
   router.back()
 }
 
-function play() {
-  musicStore.setCurrentPlayMusic(route.query.id as any)
-  audioPlayStatus.value = !audioPlayStatus.value
-  emits('playMusic', {
-    url: url.value,
-    status: audioPlayStatus.value,
-  })
-  musicStore.setcurrentPlayMusicData({
-    name: songs.value.al.name,
-  })
+function play(next = false) {
+  if (next) {
+    musicStore.setCurrentPlayMusic(route.query.id as any)
+    audioPlayStatus.value = true
+    emits('playMusic', {
+      url: url.value,
+      status: audioPlayStatus.value,
+    })
+    musicStore.setcurrentPlayMusicData({
+      name: songs.value.al.name,
+    })
+  } else {
+    musicStore.setCurrentPlayMusic(route.query.id as any)
+    audioPlayStatus.value = !audioPlayStatus.value
+    emits('playMusic', {
+      url: url.value,
+      status: audioPlayStatus.value,
+    })
+    musicStore.setcurrentPlayMusicData({
+      name: songs.value.al.name,
+    })
+  }
 }
 
 function formatTime(time: number) {
@@ -81,8 +102,38 @@ const playIcon = computed(() => {
   return audioPlayStatus.value ? 'heroicons-outline:pause' : 'material-symbols:play-circle-outline'
 })
 
+const preAndNext = reactive({
+  pre: {} as any,
+  next: {} as any,
+})
+
+function getPreAndNextSong() {
+  const { pre, next } = getPlayListPreAndNext(currentPlayList.value, Number(enterMusicId.value))
+  preAndNext.pre = pre
+  preAndNext.next = next
+}
+
+function toPre() {
+  router.replace({
+    path: '/detail-song',
+    query: {
+      id: preAndNext.pre.id,
+    },
+  })
+}
+
+function toNext() {
+  router.replace({
+    path: '/detail-song',
+    query: {
+      id: preAndNext.next.id,
+    },
+  })
+}
+
 onMounted(() => {
   getMusicUrlAndDetail(route.query.id)
+  getPreAndNextSong()
 })
 </script>
 
@@ -112,9 +163,9 @@ onMounted(() => {
       </div>
     </div>
     <div class="control">
-      <Icon class="icon" icon="ic:baseline-skip-previous" />
-      <Icon class="icon center" :icon="playIcon" @click="play" />
-      <Icon class="icon" icon="ic:baseline-skip-next" />
+      <Icon class="icon" icon="ic:baseline-skip-previous" @click="toPre" />
+      <Icon class="icon center" :icon="playIcon" @click="play(false)" />
+      <Icon class="icon" icon="ic:baseline-skip-next" @click="toNext" />
     </div>
   </div>
 </template>

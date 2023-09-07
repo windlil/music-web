@@ -24,7 +24,7 @@ async function getPlayList() {
   for (let i = 0; i < tracks.value.length; i++) {
     tracks.value[i].id = playList.value.trackIds[i].id
   }
-  musicStore.setEnterPlayList(tracks.value as any)
+  musicStore.setPlayList(tracks.value as any)
 }
 getPlayList()
 </script>

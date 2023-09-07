@@ -12,7 +12,7 @@ const musicStore = useMusicStore()
 const router = useRouter()
 
 function toDetail(id: number) {
-  musicStore.setEnterPlayList(props.musicList)
+  musicStore.setPlayList(props.musicList)
 
   router.push({
     path: '/detail-song',
