@@ -8,7 +8,7 @@ import { fetchMusicUrl, fetchMusicDetail } from '@/server/modules/detail'
 import { getCompleteName } from '@/utils'
 import { getPlayListPreAndNext } from '@/utils/getPlayListSort'
 
-const emits = defineEmits(['playMusic'])
+const emits = defineEmits(['playMusic', 'clickProgress'])
 
 const musicStore = useMusicStore()
 const { currentPlayMusicId, currentPlayMusicData, enterMusicId, currentPlayList } = storeToRefs(musicStore)
@@ -31,6 +31,12 @@ watch(() => route.query, async () => {
   play(true)
 })
 
+watch(() => currentPlayMusicData.value.currentTime, () => {
+  if (currentPlayMusicData.value.currentTime >= (musicPlayAllTime.value / 1000)) {
+    toNext()
+  }
+})
+
 const sliderValue = ref(0)
 
 function setSliderValue() {
@@ -46,7 +52,10 @@ const inerval = setInterval(() => {
   setSliderValue()
 }, 500)
 
-const onChange = (value: any) => console.log(value)
+function onChange(value: any) {
+  const currentTime = (value / 100) * musicPlayAllTime.value
+  emits('clickProgress', currentTime)
+}
 
 const isPlay = computed(() => {
   return audioPlayStatus.value ? 'play' : ''
@@ -138,10 +147,6 @@ function toNext() {
   })
 }
 
-function drag() {
-  console.log('drap')
-}
-
 onMounted(() => {
   getMusicUrlAndDetail(route.query.id)
   getPreAndNextSong()
@@ -172,7 +177,7 @@ onBeforeUnmount(() => {
       <div class="time">
         {{ formatTime(currentPlayMusicData.currentTime * 1000) }}
       </div>
-      <van-slider v-model="sliderValue" active-color="pink" @drag-star="drag" @change="onChange" />
+      <van-slider v-model="sliderValue" active-color="pink" @change="onChange" />
       <div class="time">
         {{ formatTime(musicPlayAllTime) }}
       </div>

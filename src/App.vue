@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
+import { useLoginStore } from './store/modules/login'
 import useMusicStore from '@/store/modules/music'
 
 const audioRef = ref<HTMLAudioElement>()
 const musicStore = useMusicStore()
+
+const loginStore = useLoginStore()
+loginStore.getLoginStatus()
 
 interface Music {
   url: string
@@ -29,11 +33,15 @@ function handleTimeUpdate() {
   const currentTime = audioRef.value?.currentTime as number
   musicStore.setCurrentTime(currentTime)
 }
+
+function clickProgress(currentTime: any) {
+  audioRef.value!.currentTime = currentTime / 1000
+}
 </script>
 
 <template>
   <div class="app">
-    <RouterView @play-music="playMusic" />
+    <RouterView @play-music="playMusic" @click-progress="clickProgress" />
     <audio ref="audioRef" :src="url" :ontimeupdate="handleTimeUpdate" />
   </div>
 </template>

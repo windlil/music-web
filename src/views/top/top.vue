@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
@@ -21,25 +21,44 @@ function toDetail(id: number) {
   })
 }
 
-onMounted(() => {
-  console.log(topList.value)
-})
+const loading = ref(false)
+
+async function onRefresh() {
+  setTimeout(() => {
+    topStore.getTopList()
+    loading.value = false
+  }, 1000)
+}
 </script>
 
 <template>
-  <div class="top">
-    <Container v-if="topList" title="榜单推荐" p-b="80px">
-      <div class="container">
-        <div v-for="item in topList" :key="item.id" class="box" @click="toDetail(item.id)">
-          <img :src="item.coverImgUrl" alt="">
-          <Icon class="icon" icon="mingcute:play-fill" />
+  <van-pull-refresh v-model="loading" @refresh="onRefresh">
+    <div class="tip">
+      上拉刷新
+    </div>
+    <div class="top">
+      <Container v-if="topList" title="榜单推荐" p-b="80px">
+        <div class="container">
+          <div v-for="item in topList" :key="item.id" class="box" @click="toDetail(item.id)">
+            <img :src="item.coverImgUrl" alt="">
+            <Icon class="icon" icon="mingcute:play-fill" />
+          </div>
         </div>
-      </div>
-    </Container>
-  </div>
+      </Container>
+    </div>
+  </van-pull-refresh>
 </template>
 
 <style scoped lang="scss">
+.tip {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: #4f4f4f;
+}
+
 .top {
   box-sizing: border-box;
   height: 100%;

@@ -1,16 +1,55 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import Container from '@/components/container/container.vue'
+import { useMediaStore } from '@/store/modules/media'
 
+const mediaStore = useMediaStore()
+mediaStore.getVideoList()
+const { mediaList } = storeToRefs(mediaStore)
+
+const loading = ref(false)
+async function onRefresh() {
+  await mediaStore.getVideoList()
+  setTimeout(() => {
+    loading.value = false
+  }, 1000)
+}
 </script>
 
 <template>
-  <div>
-    <video controls src="http://vodkgeyttp9.vod.126.net/cloudmusic/AaCf6oq5_2685212822_hd.mp4?ts=1694089666&rid=FAFCE905C514203BC1BB0582D7F29326&rl=3&rs=FLatcielEEWTvErfKQaYspEqLpedbYLM&sign=41ab8da3aacc31a3b2df6b06cb379d2c&ext=sRAgyj7TyLdQ%2BXoevhPnY%2BMnQUymEHGdS%2FlKeVUNcxw%2BfuBlgDutVtH4Y8%2BVPSEKxLT%2BRM%2F4u7zQLEeWzOid70qRAEk6Mf6a%2Br9rV3%2BjbRppH%2FaKOhbloqpyWQgIkOcglA%2FdGDOoH2FJffcYXqCwnHgwoUn%2FwrAlAPg86xYCe2h6RXQWsFnVsRBs3DwYeKY0FdshwUhIDqRG9xPf0c6vHVxTS1sHnW7HhejCUM5S5dp9OEP28VS1pCUsdisJHXDM" />
-  </div>
+  <van-pull-refresh v-model="loading" @refresh="onRefresh">
+    <div class="media">
+      <Container title="视频推荐" p-b="100px">
+        <template v-for="item in mediaList" :key="item.data.urlInfo.id">
+          <div class="container-box">
+            <video controls :src="item.data.urlInfo.url" />
+            <div class="info">
+              {{ item.data.title }}
+            </div>
+          </div>
+        </template>
+      </Container>
+    </div>
+  </van-pull-refresh>
 </template>
 
 <style scoped lang="scss">
 video {
   width: 100%;
   height: 200px;
+}
+
+.media {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  padding-top: 50px;
+
+  .container-box {
+    width: 100%;
+    margin: 10px 0;
+  }
 }
 </style>

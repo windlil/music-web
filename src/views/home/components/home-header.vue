@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function toSearch() {
+  router.push({
+    path: '/search',
+  })
+}
 </script>
 
 <template>
@@ -13,8 +22,7 @@ import { Icon } from '@iconify/vue'
       </p>
     </div>
     <div class="header-right">
-      <Icon class="icon icon-search" icon="ri:search-2-line" />
-      <Icon class="icon" icon="ci:bell" />
+      <Icon class="icon icon-search" icon="ri:search-2-line" @click="toSearch" />
     </div>
   </div>
   <div class="border" />
